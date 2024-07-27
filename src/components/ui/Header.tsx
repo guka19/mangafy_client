@@ -10,8 +10,10 @@ import {
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 
+import { FaDoorOpen } from "react-icons/fa";
+import { FaUser } from "react-icons/fa";
+
 const Header = () => {
-  
   let [cartSize, setCartSize] = useState(0);
 
   return (
@@ -24,7 +26,18 @@ const Header = () => {
           MANGAFY.GE
         </a>
       </div>
-      <div className="flex justify-center items-center lg:hidden">
+
+      <div className="flex justify-center items-center space-x-4 lg:hidden">
+        <div className="flex justify-center items-center">
+          <a className="flex justify-center items-center" href="#">
+            <img
+              className="w-8"
+              src="https://www.svgrepo.com/show/529450/cart-large-2.svg"
+              alt="cart-icon"
+            />
+            <b className="text-slate-900 text-lg">{cartSize}</b>
+          </a>
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger>
             <img
@@ -73,23 +86,18 @@ const Header = () => {
             <DropdownMenuLabel className="flex justify-center items-center">
               Account
             </DropdownMenuLabel>
+            <DropdownMenuItem className="flex justify-center items-center"></DropdownMenuItem>
             <DropdownMenuItem className="flex justify-center items-center">
-              <div className="flex justify-center items-center">
-                <a className="flex justify-center items-center" href="#">
-                  <img
-                    className="w-10"
-                    src="https://www.svgrepo.com/show/529450/cart-large-2.svg"
-                    alt="cart-icon"
-                  />
-                  <b className="text-slate-900 text-lg">{cartSize}</b>
-                </a>
-              </div>
+              <Button>
+                {" "}
+                <FaDoorOpen className="mr-2 h-4 w-4" /> Login
+              </Button>
             </DropdownMenuItem>
             <DropdownMenuItem className="flex justify-center items-center">
-              <Button>Login</Button>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="flex justify-center items-center">
-              <Button variant={"outline"}>Register</Button>
+              <Button variant={"outline"}>
+                {" "}
+                <FaUser className="mr-2 h-4 w-4" /> Register
+              </Button>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -132,7 +140,7 @@ const Header = () => {
         <div className="flex justify-center items-center">
           <a className="flex justify-center items-center" href="#">
             <img
-              className="w-10"
+              className="w-8"
               src="https://www.svgrepo.com/show/529450/cart-large-2.svg"
               alt="cart-icon"
             />
@@ -140,8 +148,14 @@ const Header = () => {
           </a>
         </div>
         <div className="flex justify-center items-center space-x-2">
-          <Button>Login</Button>
-          <Button variant={"outline"}>Register</Button>
+          <Button>
+            {" "}
+            <FaDoorOpen className="mr-2 h-4 w-4" /> Login
+          </Button>
+          <Button variant={"outline"}>
+            {" "}
+            <FaUser className="mr-2 h-4 w-4" /> Register
+          </Button>
         </div>
       </div>
     </header>

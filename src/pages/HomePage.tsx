@@ -1,67 +1,112 @@
-import { useState } from "react";
-import search from "../assets/search.svg";
-import { RiArrowDownSLine } from "react-icons/ri";
-import { RiArrowUpSLine } from "react-icons/ri";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import Manga from "@/interfaces/Manga";
+import MangaCard from "@/components/ui/MangaCard";
+import Spinner from "@/components/ui/Spinner";
+import { Link } from "react-router-dom";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { FaArrowRight } from "react-icons/fa";
+import AutoPlay from "embla-carousel-autoplay";
 
 const HomePage = () => {
+  const [recentMangas, setRecentMangas] = useState<Manga[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [showFilter, setShowFilter] = useState(false);
+  const bigThreeCarousel = [
+    {
+      id: 1,
+      name: "bleach",
+      image:
+        "https://www.animenewsnetwork.com/hotlink/thumbnails/crop1200x630g70/herald/23810/bleachsmall.jpg",
+    },
+    {
+      id: 2,
+      name: "naruto",
+      image:
+        "https://static1.srcdn.com/wordpress/wp-content/uploads/2023/07/chapter_234color.jpg",
+    },
+    {
+      id: 3,
+      name: "one-piece",
+      image:
+        "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2024/01/one-piece-january-2024-manga.jpeg",
+    },
+  ];
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      const apiUrl = "http://localhost:3000/mangas/api/getLatest";
+      try {
+        const res = await fetch(apiUrl);
+        const data = await res.json();
+        setRecentMangas(data);
+      } catch (err) {
+        console.log("Error fetching data: ", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchJobs();
+  }, []);
 
   return (
-    <div className="flex flex-col justify-center items-center py-4">
-      <div className="flex items-center space-x-4">
-        <div className="flex">
-          <input type="text" placeholder="Search for mangas..." className="outline-none p-2 text-md border-[1px] border-slate-900 rounded-xl"/>
-          <img src={search} alt="search-icon" className="w-10"/>
+    <div className="flex flex-col justify-center items-center py-8 bg-gray-100 min-h-screen">
+      <span className="text-3xl font-bold text-gray-800 mb-6">Big Three Collection</span>
+      <Carousel className="w-full max-w-3xl"
+      opts={{
+        loop: true
+      }}
+      plugins={[
+        AutoPlay({
+          delay: 2000
+        })
+      ]}
+      >
+        <CarouselContent className="flex">
+          {bigThreeCarousel.map((manga) => (
+            <CarouselItem key={manga.id} className="flex-shrink-0 w-full">
+              <img
+                src={manga.image}
+                alt={manga.name}
+                className="w-full h-[400px] object-cover rounded-lg shadow-lg"
+              />
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-lg cursor-pointer" />
+        <CarouselNext className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-lg cursor-pointer" />
+      </Carousel>
+      <Link to="/catalog">
+        <Button className="mt-6 flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700">
+          <FaArrowRight className="mr-2 h-4 w-4" />
+          Check out collection
+        </Button>
+      </Link>
+      <div className="flex flex-col justify-center items-center mt-12 w-full">
+        <span className="text-3xl font-bold text-gray-800 mb-6">Recent Mangas</span>
+        <div className="flex flex-wrap justify-center items-center w-full">
+          {loading ? (
+            <Spinner loading={loading} />
+          ) : (
+            recentMangas.map((manga) => (
+              <MangaCard manga={manga} key={manga._id} />
+            ))
+          )}
         </div>
-        <div className="flex items-center bg-slate-900 rounded-xl p-2 text-white" onClick={() => {
-          setShowFilter(!showFilter);
-        }}>
-          <span>Filter</span>
-          { showFilter ? <RiArrowUpSLine/> : <RiArrowDownSLine /> }
-        </div>
+        <Link to="/catalog">
+          <Button className="mt-6 flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700">
+            <FaArrowRight className="mr-2 h-4 w-4" />
+            Check All Mangas
+          </Button>
+        </Link>
       </div>
-      { showFilter ? 
-      <div className="flex flex-col mt-1 py-2 space-y-2 border-b-[1px] border-[#333]">
-      <select name="category" className="border-none rounded-xl outline-none cursor-pointer hover:bg-slate-900 hover:text-white transition-all duration-150 ease">
-          <option value="" disabled selected hidden>Category</option>
-          <option value="shonen">Shonen</option>
-          <option value="josei">Josei</option>
-          <option value="shojo">Shojo</option>
-          <option value="seinen">Seinen</option>
-        </select>
-        <select name="dateReleased" className="border-none rounded-xl outline-none cursor-pointer hover:bg-slate-900 hover:text-white transition-all duration-150 ease">
-          <option value="" disabled selected hidden>Relese Date</option>
-          <option value="2024">2024</option>
-          <option value="2023">2023</option>
-          <option value="2022">2022</option>
-          <option value="2021">2021</option>  
-          <option value="2020">2020</option>
-          <option value="2019">2019</option>
-          <option value="2018">2018</option>
-          <option value="2017">2017</option>
-          <option value="2016">2016</option>
-          <option value="2015">2015</option>
-        </select>
-        <select name="Rating" className="border-none rounded-xl outline-none cursor-pointer hover:bg-slate-900 hover:text-white transition-all duration-150 ease">
-          <option value="" disabled selected hidden>Rating</option>
-          <option value="4-5">4-5</option>
-          <option value="3-4">3-4</option>
-          <option value="2-4">2-3</option>
-          <option value="1-2">1-2</option>
-          <option value="0-1">0-1</option>
-        </select>
-        <select name="genre" className="border-none rounded-xl outline-none cursor-pointer hover:bg-slate-900 hover:text-white transition-all duration-150 ease">
-          <option value="" disabled selected hidden>Main Genre</option>
-          <option value="adventure">Adventure</option>
-          <option value="fantasy">Fantasy</option>
-          <option value="action">Action</option>
-          <option value="historical">Historical</option>
-          <option value="dark fantasy">Supernatural</option>
-        </select>
-        <Button>Apply Filters</Button>
-      </div> : null }
     </div>
   );
 };
