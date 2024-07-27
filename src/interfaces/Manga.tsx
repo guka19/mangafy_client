@@ -9,4 +9,5 @@ export default interface Manga {
   genres: string[];
   volume: number;
   rating: number;
+  category: string;
 }

@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 import { FaDoorOpen } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
@@ -52,7 +52,11 @@ const Header = () => {
             </DropdownMenuLabel>
             <DropdownMenuItem className="flex items-center">
               <NavLink
-                className="flex justify-center items-center font-sans font-bold text-gray-600 hover:text-gray-900"
+                className={({ isActive }) =>
+                  isActive
+                    ? "flex justify-center items-center font-sans font-bold text-black hover:text-gray-900 2xl:text-xl"
+                    : "flex justify-center items-center font-sans font-bold text-gray-600 hover:text-gray-900 2xl:text-xl"
+                }
                 to="/"
               >
                 Home
@@ -60,7 +64,11 @@ const Header = () => {
             </DropdownMenuItem>
             <DropdownMenuItem className="flex items-center">
               <NavLink
-                className="flex justify-center items-center font-sans font-bold text-gray-600 hover:text-gray-900"
+                className={({ isActive }) =>
+                  isActive
+                    ? "flex justify-center items-center font-sans font-bold text-black hover:text-gray-900 2xl:text-xl"
+                    : "flex justify-center items-center font-sans font-bold text-gray-600 hover:text-gray-900 2xl:text-xl"
+                }
                 to="/catalog"
               >
                 Catalog
@@ -68,18 +76,14 @@ const Header = () => {
             </DropdownMenuItem>
             <DropdownMenuItem className="flex items-center">
               <NavLink
-                className="flex justify-center items-center font-sans font-bold text-gray-600 hover:text-gray-900"
+                className={({ isActive }) =>
+                  isActive
+                    ? "flex justify-center items-center font-sans font-bold text-black hover:text-gray-900 2xl:text-xl"
+                    : "flex justify-center items-center font-sans font-bold text-gray-600 hover:text-gray-900 2xl:text-xl"
+                }
                 to="/about"
               >
                 About
-              </NavLink>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="flex items-center">
-              <NavLink
-                className="flex justify-center items-center font-sans font-bold text-gray-600 hover:text-gray-900"
-                to="/contact"
-              >
-                Contact
               </NavLink>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -88,16 +92,20 @@ const Header = () => {
             </DropdownMenuLabel>
             <DropdownMenuItem className="flex justify-center items-center"></DropdownMenuItem>
             <DropdownMenuItem className="flex justify-center items-center">
-              <Button>
-                {" "}
-                <FaDoorOpen className="mr-2 h-4 w-4" /> Login
-              </Button>
+              <Link to="/login">
+                <Button>
+                  {" "}
+                  <FaDoorOpen className="mr-2 h-4 w-4" /> Login
+                </Button>
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuItem className="flex justify-center items-center">
-              <Button variant={"outline"}>
-                {" "}
-                <FaUser className="mr-2 h-4 w-4" /> Register
-              </Button>
+              <Link to="/register">
+                <Button variant={"outline"}>
+                  {" "}
+                  <FaUser className="mr-2 h-4 w-4" /> Register
+                </Button>
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -106,7 +114,11 @@ const Header = () => {
         <ul className="flex space-x-8">
           <li className="flex justify-center items-center">
             <NavLink
-              className="flex justify-center items-center font-sans font-bold text-gray-600 hover:text-gray-900 2xl:text-xl"
+              className={({ isActive }) =>
+                isActive
+                  ? "flex justify-center items-center font-sans font-bold text-black hover:text-gray-900 2xl:text-xl"
+                  : "flex justify-center items-center font-sans font-bold text-gray-600 hover:text-gray-900 2xl:text-xl"
+              }
               to="/"
             >
               Home
@@ -114,7 +126,11 @@ const Header = () => {
           </li>
           <li className="flex justify-center items-center">
             <NavLink
-              className="flex justify-center items-center font-sans font-bold text-gray-600 hover:text-gray-900 2xl:text-xl"
+              className={({ isActive }) =>
+                isActive
+                  ? "flex justify-center items-center font-sans font-bold text-black hover:text-gray-900 2xl:text-xl"
+                  : "flex justify-center items-center font-sans font-bold text-gray-600 hover:text-gray-900 2xl:text-xl"
+              }
               to="/catalog"
             >
               Catalog
@@ -122,18 +138,14 @@ const Header = () => {
           </li>
           <li className="flex justify-center items-center">
             <NavLink
-              className="flex justify-center items-center font-sans font-bold text-gray-600 hover:text-gray-900 2xl:text-xl"
+              className={({ isActive }) =>
+                isActive
+                  ? "flex justify-center items-center font-sans font-bold text-black hover:text-gray-900 2xl:text-xl"
+                  : "flex justify-center items-center font-sans font-bold text-gray-600 hover:text-gray-900 2xl:text-xl"
+              }
               to="/about"
             >
               About
-            </NavLink>
-          </li>
-          <li className="flex justify-center items-center">
-            <NavLink
-              className="flex justify-center items-center font-sans font-bold text-gray-600 hover:text-gray-900 2xl:text-xl"
-              to="/contact"
-            >
-              Contact
             </NavLink>
           </li>
         </ul>
@@ -148,14 +160,18 @@ const Header = () => {
           </a>
         </div>
         <div className="flex justify-center items-center space-x-2">
-          <Button>
-            {" "}
-            <FaDoorOpen className="mr-2 h-4 w-4" /> Login
-          </Button>
-          <Button variant={"outline"}>
-            {" "}
-            <FaUser className="mr-2 h-4 w-4" /> Register
-          </Button>
+          <Link to="/login">
+            <Button>
+              {" "}
+              <FaDoorOpen className="mr-2 h-4 w-4" /> Login
+            </Button>
+          </Link>
+          <Link to="/register">
+            <Button variant={"outline"}>
+              {" "}
+              <FaUser className="mr-2 h-4 w-4" /> Register
+            </Button>
+          </Link>
         </div>
       </div>
     </header>

@@ -58,7 +58,7 @@ const HomePage = () => {
 
   return (
     <div className="flex flex-col justify-center items-center py-8 bg-gray-100 min-h-screen">
-      <span className="text-3xl font-bold text-gray-800 mb-6">Big Three Collection</span>
+      <span className="text-3xl font-bold text-gray-800 mb-6 max-sm:text-2xl">Big Three Collection</span>
       <Carousel className="w-full max-w-3xl"
       opts={{
         loop: true

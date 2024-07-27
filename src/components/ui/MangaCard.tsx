@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Manga from "@/interfaces/Manga";
 import { Button } from './button';
 import { FaCartPlus } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 interface MangaCardProps {
     manga: Manga;
@@ -34,9 +35,11 @@ const MangaCard: React.FC<MangaCardProps> = ({ manga }) => {
           <Button>
             <FaCartPlus className='mr-2 h-4 w-4' /> Add to cart
           </Button>
-          <Button variant={'outline'}>
-            Full Review
-          </Button>
+          <Link to={`/mangas/${manga._id}`}>
+            <Button variant={'outline'}>
+              Full Review
+            </Button>
+          </Link>
         </div>
     </div>
   );
