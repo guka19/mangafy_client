@@ -6,12 +6,22 @@ import { Button } from "@/components/ui/button";
 import Spinner from "@/components/ui/Spinner";
 import MangaCard from "@/components/ui/MangaCard";
 import Manga from "@/interfaces/Manga";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const CatalogPage = () => {
-
   const [mangas, setMangas] = useState<Manga[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showFilter, setShowFilter] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedPrice, setSelectedPrice] = useState<string>("");
 
   useEffect(() => {
     const fetchMangas = async () => {
@@ -24,168 +34,129 @@ const CatalogPage = () => {
       } finally {
         setLoading(false);
       }
-    }
+    };
 
     fetchMangas();
-  }, [])
+  }, []);
+
+  const searchMangas = async () => {
+    setLoading(true);
+    try {
+      const url = new URL("http://localhost:3000/mangas/api/search");
+      url.searchParams.append('title', searchQuery);
+
+      // Add other filters if they are set
+      if (selectedCategory) url.searchParams.append('category', selectedCategory);
+      if (selectedPrice) url.searchParams.append('price', selectedPrice);
+
+      const res = await fetch(url);
+      const data = await res.json();
+      setMangas(data);
+    } catch (err) {
+      console.log("Error fetching data: ", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resetFilters = () => {
+    setSearchQuery("");
+    setSelectedCategory("");
+    setSelectedPrice("");
+    setLoading(true);
+    fetch("http://localhost:3000/mangas/api/getAll")
+      .then((res) => res.json())
+      .then((data) => {
+        setMangas(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log("Error fetching data: ", err);
+        setLoading(false);
+      });
+  };
 
   return (
-    <div className='flex flex-col justify-center items-center py-4 px-16'>
+    <div className="flex flex-col justify-center items-center py-4 px-16">
       <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4 xl:space-x-16 mb-4 w-full max-w-6xl">
-        <div className="flex w-full md:w-auto">
-          <input
-            type="text"
-            placeholder="Search for mangas..."
-            className="outline-none p-2 text-md border border-slate-300 rounded-l-xl md:p-3 xl:pr-12 xl:text-lg 2xl:pr-24 w-full md:w-auto"
+        <div className="flex justify-center items-center space-x-2 border-[1px] border-slate-900 p-1 rounded-xl">
+          <Input
+            placeholder="Search for the mangas..."
+            className="border-none focus-visible:ring-white text-md"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <button className="bg-slate-900 rounded-r-xl p-2 md:p-3">
-            <FaSearch className="text-white" />
-          </button>
+          <Button onClick={searchMangas}>
+            <FaSearch className="mr-2 w-4 h-4" /> Search
+          </Button>
         </div>
         <div className="hidden lg:flex space-x-6">
-          <select
-            name="category"
-            className="border border-slate-300 rounded-xl outline-none cursor-pointer hover:bg-slate-900 hover:text-white transition-all duration-150 ease text-lg p-2"
-          >
-            <option value="" hidden>
-              Category
-            </option>
-            <option value="shonen">Shonen</option>
-            <option value="josei">Josei</option>
-            <option value="shojo">Shojo</option>
-            <option value="seinen">Seinen</option>
-          </select>
-          <select
-            name="dateReleased"
-            className="border border-slate-300 rounded-xl outline-none cursor-pointer hover:bg-slate-900 hover:text-white transition-all duration-150 ease text-lg p-2"
-          >
-            <option value="" hidden>
-              Release Date
-            </option>
-            <option value="2024">2024</option>
-            <option value="2023">2023</option>
-            <option value="2022">2022</option>
-            <option value="2021">2021</option>
-            <option value="2020">2020</option>
-            <option value="2019">2019</option>
-            <option value="2018">2018</option>
-            <option value="2017">2017</option>
-            <option value="2016">2016</option>
-            <option value="2015">2015</option>
-          </select>
-          <select
-            name="Rating"
-            className="border border-slate-300 rounded-xl outline-none cursor-pointer hover:bg-slate-900 hover:text-white transition-all duration-150 ease text-lg p-2"
-          >
-            <option value="" hidden>
-              Rating
-            </option>
-            <option value="4-5">4-5</option>
-            <option value="3-4">3-4</option>
-            <option value="2-4">2-3</option>
-            <option value="1-2">1-2</option>
-            <option value="0-1">0-1</option>
-          </select>
-          <select
-            name="genre"
-            className="border border-slate-300 rounded-xl outline-none cursor-pointer hover:bg-slate-900 hover:text-white transition-all duration-150 ease text-lg p-2"
-          >
-            <option value="" hidden>
-              Main Genre
-            </option>
-            <option value="adventure">Adventure</option>
-            <option value="fantasy">Fantasy</option>
-            <option value="action">Action</option>
-            <option value="historical">Historical</option>
-            <option value="dark fantasy">Supernatural</option>
-          </select>
-          <Button>Apply Filters</Button>
+          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="shonen">Category: Shonen</SelectItem>
+              <SelectItem value="shojo">Category: Shoho</SelectItem>
+              <SelectItem value="seinen">Category: Seinen</SelectItem>
+              <SelectItem value="josei">Category: Josei</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={selectedPrice} onValueChange={setSelectedPrice}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Price" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="high-to-low">Price: High to Low</SelectItem>
+              <SelectItem value="low-to-high">Price: Low to High</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button onClick={searchMangas}>Apply Filters</Button>
+          <Button variant="secondary" onClick={resetFilters}>Reset Filters</Button>
         </div>
         <div
           className="flex items-center bg-slate-900 rounded-xl p-2 text-white lg:hidden cursor-pointer"
           onClick={() => setShowFilter(!showFilter)}
         >
           <span>Filter</span>
-          {showFilter ? (
-            <RiArrowUpSLine className="ml-2" />
-          ) : (
-            <RiArrowDownSLine className="ml-2" />
-          )}
+          {showFilter ? <RiArrowUpSLine className="ml-2" /> : <RiArrowDownSLine className="ml-2" />}
         </div>
       </div>
       {showFilter ? (
-        <div className="flex flex-col mt-1 py-2 space-y-2 border-b border-slate-300 lg:hidden w-full max-w-6xl">
-          <select
-            name="category"
-            className="border border-slate-300 rounded-xl outline-none cursor-pointer hover:bg-slate-900 hover:text-white transition-all duration-150 ease p-2"
-          >
-            <option value="" hidden>
-              Category
-            </option>
-            <option value="shonen">Shonen</option>
-            <option value="josei">Josei</option>
-            <option value="shojo">Shojo</option>
-            <option value="seinen">Seinen</option>
-          </select>
-          <select
-            name="dateReleased"
-            className="border border-slate-300 rounded-xl outline-none cursor-pointer hover:bg-slate-900 hover:text-white transition-all duration-150 ease p-2"
-          >
-            <option value="" hidden>
-              Release Date
-            </option>
-            <option value="2024">2024</option>
-            <option value="2023">2023</option>
-            <option value="2022">2022</option>
-            <option value="2021">2021</option>
-            <option value="2020">2020</option>
-            <option value="2019">2019</option>
-            <option value="2018">2018</option>
-            <option value="2017">2017</option>
-            <option value="2016">2016</option>
-            <option value="2015">2015</option>
-          </select>
-          <select
-            name="Rating"
-            className="border border-slate-300 rounded-xl outline-none cursor-pointer hover:bg-slate-900 hover:text-white transition-all duration-150 ease p-2"
-          >
-            <option value="" hidden>
-              Rating
-            </option>
-            <option value="4-5">4-5</option>
-            <option value="3-4">3-4</option>
-            <option value="2-4">2-3</option>
-            <option value="1-2">1-2</option>
-            <option value="0-1">0-1</option>
-          </select>
-          <select
-            name="genre"
-            className="border border-slate-300 rounded-xl outline-none cursor-pointer hover:bg-slate-900 hover:text-white transition-all duration-150 ease p-2"
-          >
-            <option value="" hidden>
-              Main Genre
-            </option>
-            <option value="adventure">Adventure</option>
-            <option value="fantasy">Fantasy</option>
-            <option value="action">Action</option>
-            <option value="historical">Historical</option>
-            <option value="dark fantasy">Supernatural</option>
-          </select>
-          <Button>Apply Filters</Button>
+        <div className="flex flex-col justify-center items-center mt-1 py-2 space-y-2 border-b border-slate-300 lg:hidden w-full max-w-6xl">
+          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="shonen">Category: Shonen</SelectItem>
+              <SelectItem value="shojo">Category: Shoho</SelectItem>
+              <SelectItem value="seinen">Category: Seinen</SelectItem>
+              <SelectItem value="josei">Category: Josei</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={selectedPrice} onValueChange={setSelectedPrice}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Price" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="high-to-low">Price: High to Low</SelectItem>
+              <SelectItem value="low-to-high">Price: Low to High</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button onClick={searchMangas}>Apply Filters</Button>
         </div>
       ) : null}
       <span className="text-3xl font-bold text-gray-800 mb-6">Manga Catalog</span>
-        <div className="flex flex-wrap justify-center items-center w-full px-16">
-          {loading ? (
-            <Spinner loading={loading} />
-          ) : (
-            mangas.map((manga) => (
-              <MangaCard manga={manga} key={manga._id} />
-            ))
-          )}
-        </div>
+      <div className="flex flex-wrap justify-center items-center w-full px-16">
+        {loading ? (
+          <Spinner loading={loading} />
+        ) : (
+          mangas.map((manga) => <MangaCard manga={manga} key={manga._id} />)
+        )}
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default CatalogPage
+export default CatalogPage;
