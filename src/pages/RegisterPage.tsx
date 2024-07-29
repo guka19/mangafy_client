@@ -9,11 +9,13 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { MouseEvent } from "react";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
 
-  const registerUser = async () => {
+  const registerUser = async (e: MouseEvent) => {
+    e.preventDefault();
     if (!firstName || !lastName || !email || !password || !repeatPassword) {
       alert("Please fill in all required fields");
       return;
@@ -26,7 +28,7 @@ const RegisterPage = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:3000/users/api/register",
+        "https://mangafy-api.onrender.com/users/api/register",
         {
           method: "POST",
           headers: {
@@ -39,7 +41,7 @@ const RegisterPage = () => {
             address: {
               country,
               city,
-              streetAddress
+              streetAddress,
             },
             password,
           }),
@@ -166,7 +168,7 @@ const RegisterPage = () => {
         <Link to="/login" className="text-sm underline">
           Already have an account? Login here
         </Link>
-        <Button onClick={registerUser}>Sign Up</Button>
+        <Button onClick={(e) => registerUser(e)}>Sign Up</Button>
       </form>
     </div>
   );
