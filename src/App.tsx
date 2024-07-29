@@ -8,7 +8,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import NotFoundPage from './pages/NotFoundPage';
 import MangaPage from './pages/MangaPage';
-import ProtectedRoute from './components/routes/ProtectedRoutes';
+// import ProtectedRoute from './components/routes/ProtectedRoutes';
 import ProfilePage from './pages/ProfilePage';
 
 const router = createBrowserRouter([
@@ -22,7 +22,7 @@ const router = createBrowserRouter([
       { path: "/login", element: <LoginPage /> },
       { path: "/register", element: <RegisterPage /> },
       { path: "/mangas/:id", element: <MangaPage /> },
-      { path: "/profile", element: <ProtectedRoute element={<ProfilePage />} /> },
+      { path: "/profile", element: <ProfilePage /> },
       { path: "*", element: <NotFoundPage /> }
     ]
   }
