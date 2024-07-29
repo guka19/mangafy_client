@@ -1,20 +1,22 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+
 
 const LoginPage = () => {
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:3000/users/api/login", {
+      const response = await fetch("https://mangafy-api.onrender.com/users/api/login", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -28,7 +30,9 @@ const LoginPage = () => {
       login(data.token);
     } catch (err) {
       console.log("Error fetching user credentials: ", err);
-    } 
+    } finally {
+      navigate("/");
+    }
   }
 
   return (

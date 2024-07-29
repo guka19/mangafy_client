@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import notFound from "../assets/notfound.jpg";
 import { Link } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 

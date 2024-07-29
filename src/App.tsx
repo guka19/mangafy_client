@@ -1,39 +1,39 @@
-import { AuthProvider } from "./contexts/AuthContext";
-import { 
-  Route,
-  createBrowserRouter,
-  createRoutesFromElements,
-  RouterProvider
- } from "react-router-dom";
-import MainLayout from "./layouts/MainLayout";
-import HomePage from "./pages/HomePage";
-import CatalogPage from "./pages/CatalogPage";
-import AboutPage from "./pages/AboutPage";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
-import NotFoundPage from "./pages/NotFoundPage";
-import MangaPage from "./pages/MangaPage";
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import MainLayout from './layouts/MainLayout';
+import HomePage from './pages/HomePage';
+import CatalogPage from './pages/CatalogPage';
+import AboutPage from './pages/AboutPage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import NotFoundPage from './pages/NotFoundPage';
+import MangaPage from './pages/MangaPage';
+import ProtectedRoute from './components/routes/ProtectedRoutes';
+import ProfilePage from './pages/ProfilePage';
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <MainLayout />,
+    children: [
+      { path: "/", element: <HomePage /> },
+      { path: "/catalog", element: <CatalogPage /> },
+      { path: "/about", element: <AboutPage /> },
+      { path: "/login", element: <LoginPage /> },
+      { path: "/register", element: <RegisterPage /> },
+      { path: "/mangas/:id", element: <MangaPage /> },
+      { path: "/profile", element: <ProtectedRoute element={<ProfilePage />} /> },
+      { path: "*", element: <NotFoundPage /> }
+    ]
+  }
+]);
+
 const App = () => {
-
-  const router = createBrowserRouter(
-    createRoutesFromElements(
-      <Route path="/" element={<MainLayout />}>
-        <Route index element={<HomePage />}/>
-        <Route path="/catalog" element={<CatalogPage />}/>
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/mangas/:id" element={<MangaPage />} />
-        <Route path="*" element={<NotFoundPage />} /> 
-      </Route>
-    )
-  );
-
   return (
     <AuthProvider>
       <RouterProvider router={router} />
     </AuthProvider>
-  )
+  );
 };
 
 export default App;

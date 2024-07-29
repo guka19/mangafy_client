@@ -8,13 +8,22 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
-
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FaDoorOpen } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Header = () => {
-  let [cartSize, setCartSize] = useState(0);
+  let [cartSize] = useState(0);
+  const { logout } = useAuth();
+  const token = localStorage.getItem("jwt");
+
+  const navigate = useNavigate();
+
+  const signOut = () => {
+    logout();
+    navigate("/");
+  }
 
   return (
     <header className="flex justify-between py-6 px-8 border-b-[1px] border-[#333] 2xl:py-8 2xl:px-12">
@@ -91,22 +100,44 @@ const Header = () => {
               Account
             </DropdownMenuLabel>
             <DropdownMenuItem className="flex justify-center items-center"></DropdownMenuItem>
-            <DropdownMenuItem className="flex justify-center items-center">
-              <Link to="/login">
-                <Button>
-                  {" "}
-                  <FaDoorOpen className="mr-2 h-4 w-4" /> Login
-                </Button>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="flex justify-center items-center">
-              <Link to="/register">
-                <Button variant={"outline"}>
-                  {" "}
-                  <FaUser className="mr-2 h-4 w-4" /> Register
-                </Button>
-              </Link>
-            </DropdownMenuItem>
+            { token ? 
+                            <div>
+                              <DropdownMenuItem className="flex justify-center items-center">
+                              <Link to="/profile">
+                  <Button>
+                    {" "}
+                    <FaDoorOpen className="mr-2 h-4 w-4" /> Profile
+                  </Button>
+                </Link>
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem className="flex justify-center items-center">
+                                                        <Button variant={"outline"} onClick={() => {
+                    signOut();
+                  }}>
+                    {" "}
+                    <FaUser className="mr-2 h-4 w-4" /> Logout
+                  </Button>
+                                                        </DropdownMenuItem>
+                            </div> :
+                                 <div>
+                                   <DropdownMenuItem className="flex justify-center items-center">
+                                   <Link to="/login">
+                                     <Button>
+                                       {" "}
+                                       <FaDoorOpen className="mr-2 h-4 w-4" /> Login
+                                     </Button>
+                                   </Link>
+                                                                  </DropdownMenuItem>
+                                                                  <DropdownMenuItem className="flex justify-center items-center">
+                                   <Link to="/register">
+                                     <Button variant={"outline"}>
+                                       {" "}
+                                       <FaUser className="mr-2 h-4 w-4" /> Register
+                                     </Button>
+                                   </Link>
+                                                                  </DropdownMenuItem>
+                                 </div>
+      }
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -159,20 +190,36 @@ const Header = () => {
             <b className="text-slate-900 text-lg">{cartSize}</b>
           </a>
         </div>
-        <div className="flex justify-center items-center space-x-2">
-          <Link to="/login">
-            <Button>
-              {" "}
-              <FaDoorOpen className="mr-2 h-4 w-4" /> Login
-            </Button>
-          </Link>
-          <Link to="/register">
-            <Button variant={"outline"}>
-              {" "}
-              <FaUser className="mr-2 h-4 w-4" /> Register
-            </Button>
-          </Link>
-        </div>
+        { token ? 
+                <div className="flex justify-center items-center space-x-2">
+                <Link to="/profile">
+                  <Button>
+                    {" "}
+                    <FaDoorOpen className="mr-2 h-4 w-4" /> Profile
+                  </Button>
+                </Link>
+                  <Button variant={"outline"} onClick={() => {
+                    logout();
+                  }}>
+                    {" "}
+                    <FaUser className="mr-2 h-4 w-4" /> Logout
+                  </Button>
+              </div> :
+                      <div className="flex justify-center items-center space-x-2">
+                      <Link to="/login">
+                        <Button>
+                          {" "}
+                          <FaDoorOpen className="mr-2 h-4 w-4" /> Login
+                        </Button>
+                      </Link>
+                      <Link to="/register">
+                        <Button variant={"outline"}>
+                          {" "}
+                          <FaUser className="mr-2 h-4 w-4" /> Register
+                        </Button>
+                      </Link>
+                    </div>
+      }
       </div>
     </header>
   );

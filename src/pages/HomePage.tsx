@@ -41,7 +41,7 @@ const HomePage = () => {
 
   useEffect(() => {
     const fetchJobs = async () => {
-      const apiUrl = "http://localhost:3000/mangas/api/getLatest";
+      const apiUrl = "https://mangafy-api.onrender.com/mangas/api/getLatest";
       try {
         const res = await fetch(apiUrl);
         const data = await res.json();

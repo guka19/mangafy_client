@@ -6,9 +6,7 @@ import { FaCartPlus, FaDollarSign } from "react-icons/fa";
 import {
   Breadcrumb,
   BreadcrumbItem,
-  BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
@@ -20,7 +18,7 @@ const MangaPage = () => {
   useEffect(() => {
     const fetchManga = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/mangas/api/${id}`);
+        const res = await fetch(`https://mangafy-api.onrender.com/mangas/api/${id}`);
         const data: Manga = await res.json();
         setManga(data);
       } catch (err) {

@@ -1,16 +1,3 @@
-import { Link } from "react-router-dom";
-import { Separator } from "./separator";
-import {
-  FaHome,
-  FaStore,
-  FaQuestionCircle,
-  FaPhone,
-  FaFacebook,
-  FaInstagram,
-  FaGithub,
-  FaLinkedin,
-} from "react-icons/fa";
-
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 

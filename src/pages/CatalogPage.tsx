@@ -26,7 +26,7 @@ const CatalogPage = () => {
   useEffect(() => {
     const fetchMangas = async () => {
       try {
-        const res = await fetch("http://localhost:3000/mangas/api/getAll");
+        const res = await fetch("https://mangafy-api.onrender.com/mangas/api/getAll");
         const data = await res.json();
         setMangas(data);
       } catch (err) {
@@ -42,7 +42,7 @@ const CatalogPage = () => {
   const searchMangas = async () => {
     setLoading(true);
     try {
-      const url = new URL("http://localhost:3000/mangas/api/search");
+      const url = new URL("https://mangafy-api.onrender.com/mangas/api/search");
       url.searchParams.append('title', searchQuery);
 
       // Add other filters if they are set
@@ -64,7 +64,7 @@ const CatalogPage = () => {
     setSelectedCategory("");
     setSelectedPrice("");
     setLoading(true);
-    fetch("http://localhost:3000/mangas/api/getAll")
+    fetch("https://mangafy-api.onrender.com/mangas/api/getAll")
       .then((res) => res.json())
       .then((data) => {
         setMangas(data);
