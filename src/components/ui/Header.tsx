@@ -15,8 +15,8 @@ import { useAuth } from "@/contexts/AuthContext";
 
 const Header = () => {
   let [cartSize] = useState(0);
-  const { logout } = useAuth();
-  const token = localStorage.getItem("jwt");
+  const { token, logout } = useAuth();
+  // const token = localStorage.getItem("jwt");
 
   const navigate = useNavigate();
 
