@@ -35,6 +35,16 @@ const MangaPage = () => {
     fetchManga();
   }, [id]);
 
+  const buyNow = () => {
+    if (!token) {
+      toast.error("Login first to use cart");
+      navigate("/login");
+      return;
+    } else {
+      navigate(`/checkout/${manga?.price}`)
+    }
+  }
+
   const addToCart = async () => {
     if (!token) {
       toast.error("Login first to use cart");
@@ -144,9 +154,9 @@ const MangaPage = () => {
             Published on: {new Date(manga.publishedDate).toLocaleDateString()}
           </div>
           <div className="mt-6 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-            <Button  className="flex-1 text-center">
-              <FaDollarSign className="mr-2 h-4 w-4" /> Buy Now
-            </Button>
+              <Button  className="flex-1 text-center" onClick={buyNow}>
+                <FaDollarSign className="mr-2 h-4 w-4" /> Buy Now
+              </Button>
             <Button
               className={isAdding ? "bg-gray-300 flex-1 text-center" : "bg-blue-500 hover:bg-blue-700 flex-1 text-center"}
               onClick={addToCart}

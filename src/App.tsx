@@ -10,6 +10,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import MangaPage from "./pages/MangaPage";
 import ProfilePage from "./pages/ProfilePage";
 import CartPage from "./pages/CartPage";
+import CheckoutPage from "./pages/CheckoutPage";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 
@@ -26,6 +27,7 @@ const router = createBrowserRouter([
       { path: "/mangas/:id", element: <MangaPage /> },
       { path: "/profile", element: <ProfilePage /> },
       { path: "/cart", element: <CartPage /> },
+      { path: "/checkout/:totalPrice", element: <CheckoutPage /> },
       { path: "*", element: <NotFoundPage /> },
     ],
   },

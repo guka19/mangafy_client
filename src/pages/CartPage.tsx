@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Manga from "@/interfaces/Manga";
 import { Button } from "@/components/ui/button";
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Spinner from "@/components/ui/Spinner";
 
 const CartPage = () => {
@@ -11,6 +11,7 @@ const CartPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const token = localStorage.getItem("jwt");
+  const navigate = useNavigate();
 
   if (!token) {
     return (
@@ -112,6 +113,26 @@ const CartPage = () => {
     }
   };
 
+  const handleCheckout = async () => {
+    try {
+      const response = await fetch('https://mangafy-api.onrender.com/carts/api/clear', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        }
+      });
+      if (!response.ok) {
+        throw new Error('Failed to clear cart');
+      }
+      // Clear the cart on the client side
+      setCart(null);
+      navigate(`/checkout/${calculateTotalPrice().toFixed(2)}`);
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
   const calculateTotalPrice = () => {
     if (!cart) return 0;
     return cart.items.reduce((total, item) => {
@@ -120,9 +141,12 @@ const CartPage = () => {
     }, 0);
   };
 
-  if (loading) return <div className="flex flex-wrap justify-center items-center w-full px-16">
-          <Spinner loading={loading} />
-      </div>
+  if (loading) return (
+    <div className="flex flex-wrap justify-center items-center w-full px-16">
+      <Spinner loading={loading} />
+    </div>
+  );
+
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
 
   return (
@@ -164,7 +188,10 @@ const CartPage = () => {
             <p className="text-2xl font-semibold">${calculateTotalPrice().toFixed(2)}</p>
           </div>
           <div className="mt-6 text-center">
-            <Button className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded">
+            <Button
+              onClick={handleCheckout}
+              className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded"
+            >
               Buy Now
             </Button>
           </div>
