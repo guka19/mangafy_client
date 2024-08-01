@@ -10,19 +10,30 @@ import {
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MouseEvent } from "react";
+import { toast } from "react-toastify";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
 
   const registerUser = async (e: MouseEvent) => {
     e.preventDefault();
-    if (!firstName || !lastName || !email || !password || !repeatPassword) {
-      alert("Please fill in all required fields");
+
+    if (
+      !firstName ||
+      !lastName ||
+      !email ||
+      !password ||
+      !repeatPassword ||
+      !country ||
+      !city ||
+      !streetAddress
+    ) {
+      toast.error("Please fill in all required fields");
       return;
     }
 
     if (password !== repeatPassword) {
-      alert("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
@@ -48,17 +59,20 @@ const RegisterPage = () => {
         }
       );
 
+      const result = await response.json();
+
       if (!response.ok) {
-        throw new Error("Registration failed");
+        if ((result.message = "user_already_exists")) {
+          toast.error("User with this email already exists!");
+          return;
+        }
       }
 
-      if (response.ok) {
-        alert("Registration successful");
-        navigate("/login");
-      }
+      toast.success("Registration successful");
+      navigate("/login");
     } catch (err) {
       console.log("Error registering user: ", err);
-      alert("Registration failed. Please try again.");
+      toast.error("Registration failed. Please try again.");
     }
   };
 
@@ -84,28 +98,14 @@ const RegisterPage = () => {
     { value: "georgia", countryName: "Georgia" },
   ];
 
-  const [firstName, setFirstName] = useState<
-    string | number | readonly string[] | undefined
-  >("");
-  const [lastName, setLastName] = useState<
-    string | number | readonly string[] | undefined
-  >("");
-  const [email, setEmail] = useState<
-    string | number | readonly string[] | undefined
-  >("");
-  const [country, setCountry] = useState<string | undefined>("");
-  const [city, setCity] = useState<
-    string | number | readonly string[] | undefined
-  >("");
-  const [streetAddress, setStreetAddress] = useState<
-    string | number | readonly string[] | undefined
-  >("");
-  const [password, setPassword] = useState<
-    string | number | readonly string[] | undefined
-  >("");
-  const [repeatPassword, setRepeatPassword] = useState<
-    string | number | readonly string[] | undefined
-  >("");
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [country, setCountry] = useState<string>("");
+  const [city, setCity] = useState<string>("");
+  const [streetAddress, setStreetAddress] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [repeatPassword, setRepeatPassword] = useState<string>("");
 
   return (
     <div className="flex flex-col justify-center items-center my-4">
@@ -131,7 +131,7 @@ const RegisterPage = () => {
         />
         <Select value={country} onValueChange={(value) => setCountry(value)}>
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Country (Optional)" />
+            <SelectValue placeholder="Country" />
           </SelectTrigger>
           <SelectContent>
             {countries.map((country, i) => (
@@ -143,13 +143,13 @@ const RegisterPage = () => {
         </Select>
         <Input
           type="text"
-          placeholder="City (Optional)"
+          placeholder="City"
           value={city}
           onChange={(e) => setCity(e.target.value)}
         />
         <Input
           type="text"
-          placeholder="Street Address (Optional)"
+          placeholder="Street Address"
           value={streetAddress}
           onChange={(e) => setStreetAddress(e.target.value)}
         />

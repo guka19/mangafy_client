@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import Manga from "@/interfaces/Manga";
 import { Button } from "@/components/ui/button";
 import { FaCartPlus, FaDollarSign } from "react-icons/fa";
@@ -9,11 +9,15 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { toast } from "react-toastify";
 
 const MangaPage = () => {
   const { id } = useParams();
   const [manga, setManga] = useState<Manga | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [isAdding, setIsAdding] = useState<boolean>(false);
+  const token = localStorage.getItem("jwt");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchManga = async () => {
@@ -30,6 +34,40 @@ const MangaPage = () => {
 
     fetchManga();
   }, [id]);
+
+  const addToCart = async () => {
+    if (!token) {
+      toast.error("Login first to use cart");
+      navigate("/login");
+      return;
+    }
+    setIsAdding(true);
+
+    try {
+      const response = await fetch("https://mangafy-api.onrender.com/carts/api/cart", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          mangaId: manga?._id,
+          quantity: 1,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add to cart");
+      }
+
+      await response.json();
+      toast.success("Manga added to cart successfully!");
+    } catch (error: any) {
+      toast.error(error.message || "An error occurred");
+    } finally {
+      setIsAdding(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -52,15 +90,15 @@ const MangaPage = () => {
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <Link to="/"  className="text-slate-900 font-semibold">Home</Link>
+            <Link to="/" className="text-slate-900 font-semibold">Home</Link>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <Link to="/catalog"  className="text-slate-900 font-semibold">Manga Catalog</Link>
+            <Link to="/catalog" className="text-slate-900 font-semibold">Manga Catalog</Link>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <Link to={`/mangas/${manga._id}`}  className="text-slate-900 font-semibold">{manga.title} Volume {manga.volume}</Link>
+            <Link to={`/mangas/${manga._id}`} className="text-slate-900 font-semibold">{manga.title} Volume {manga.volume}</Link>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
@@ -106,11 +144,16 @@ const MangaPage = () => {
             Published on: {new Date(manga.publishedDate).toLocaleDateString()}
           </div>
           <div className="mt-6 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-            <Button className="bg-blue-500 hover:bg-blue-700 flex-1 text-center">
+            <Button  className="flex-1 text-center">
               <FaDollarSign className="mr-2 h-4 w-4" /> Buy Now
             </Button>
-            <Button className="flex-1 text-center">
-              <FaCartPlus className="mr-2 h-4 w-4" /> Add to cart
+            <Button
+              className={isAdding ? "bg-gray-300 flex-1 text-center" : "bg-blue-500 hover:bg-blue-700 flex-1 text-center"}
+              onClick={addToCart}
+              disabled={isAdding}
+            >
+              <FaCartPlus className="mr-2 h-4 w-4" />
+              {isAdding ? "Adding..." : "Add to cart"}
             </Button>
           </div>
         </div>
