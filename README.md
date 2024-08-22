@@ -1,4 +1,4 @@
-#Website is live -> https://mangafy-client.vercel.app/
+# Website is live -> https://mangafy-client.vercel.app/
 
 Because of the free hosting backend server will spin down with inactivity, which can delay requests by 50 seconds or more.
 
